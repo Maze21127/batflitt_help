@@ -27,7 +27,6 @@ def average_score(data: dict):
 async def in_chat_handler(message: types.Message, state: FSMContext):
     data = await state.get_data()
     support_chat_id = HELP_CHAT_ID if not data.get('support_id') else data.get('support_id')
-    print(support_chat_id)
     keyboard = GET_CUSTOMER_KEYBOARD if support_chat_id == HELP_CHAT_ID else None
     language = languages.get_user_language(message.from_user.id)
     new_message = f"""

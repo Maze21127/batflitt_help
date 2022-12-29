@@ -10,4 +10,3 @@ HELPERS_ID = map(int, getenv("HELPERS_ID")[1:-1].replace(",", "").split())
 CHATS_ID = map(int, getenv("CHATS_ID")[1:-1].replace(",", "").split())
 
 USER_CHATS = {key: value for key, value in zip(HELPERS_ID, CHATS_ID)}
-print(USER_CHATS)

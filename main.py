@@ -2,7 +2,7 @@ from aiogram import executor, Dispatcher
 from logger import logger
 from loader import dp
 
-import handlers, keyboards
+import handlers, keyboards, states, utils
 
 
 async def on_startup(dispatcher: Dispatcher):

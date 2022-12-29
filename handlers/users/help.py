@@ -2,13 +2,13 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from keyboards.inline.help import KEYBOARD, get_close_chat_keyboard, get_is_helpful_keyboard, \
-    IS_HELPFUL_KEYBOARD, get_cancel_keyboard, CANCEL_KEYBOARD, SEND_PHONE_KEYBOARD, get_start_keyboard
+    IS_HELPFUL_KEYBOARD, get_cancel_keyboard, CANCEL_KEYBOARD, get_start_keyboard
 from keyboards.reply import get_send_phone_keyboard
 from loader import dp, bot, languages
 from settings import HELP_CHAT_ID
 from states.chat import Chat
 from states.trouble import IsHelpful, Trouble, Contacts, AppContacts
-from utils.messages import MESSAGES, troubles, get_message
+from utils.messages import troubles, get_message
 
 
 @dp.callback_query_handler(lambda cb: cb.data in KEYBOARD.keys(), state="*")
@@ -18,9 +18,9 @@ async def callback_query_handler(callback_query: types.CallbackQuery):
     language = languages.get_user_language(callback_query.from_user.id)
 
     if callback_query.data in ('back', 'other'):
-        await Chat.in_chat.set()
-        return await bot.send_message(callback_query.from_user.id, get_message(language, 'chat'),
-                                      reply_markup=get_close_chat_keyboard(language))
+        await bot.send_message(callback_query.from_user.id, get_message(language, 'chat'),
+                               reply_markup=get_close_chat_keyboard(language))
+        return await Chat.in_chat.set()
 
     new_state = troubles[callback_query.data]
     await new_state.set()
@@ -89,7 +89,8 @@ async def after_back(callback_query: types.CallbackQuery, state: FSMContext):
     return await bot.send_message(callback_query.from_user.id, get_message(language, 'help_success'))
 
 
-@dp.message_handler(content_types=types.ContentType.TEXT, state="*")
+@dp.message_handler(content_types=types.ContentType.TEXT,
+                    state=[Trouble.cooperation, AppContacts.waiting_number])
 async def cancel_contacts(message: types.Message, state: FSMContext):
     language = languages.get_user_language(message['from']['id'])
     if message.text in CANCEL_KEYBOARD.values():
