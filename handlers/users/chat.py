@@ -35,7 +35,6 @@ async def in_chat_handler(message: types.Message, state: FSMContext):
 *Message ID*: {message.message_id}
 *Язык пользователя: {language}*
 """
-    await state.update_data(message=True)
     await bot.send_message(support_chat_id, new_message, parse_mode="Markdown",
                            reply_markup=keyboard)
     if keyboard is None:
@@ -89,6 +88,7 @@ async def get_request(callback_query: types.CallbackQuery):
     await callback_query.message.edit_reply_markup(reply_markup=None)
     state = dp.current_state(chat=user_id,
                              user=user_id)
+    await state.update_data(message=True)
     return await state.update_data(support_id=redirect_chat)
     # return await bot.send_message(redirect_chat, callback_query.message.text, parse_mode="Markdown")
 
